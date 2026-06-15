@@ -6,15 +6,20 @@ from datetime import datetime, timedelta
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="IIT Indore Weather Station Dashboard",
-    page_icon="WQgH_yKt.jpg",  # Uses your uploaded logo for the browser tab favicon
+    page_icon="IITI_S_Logo.jpg",  # Uses your uploaded logo for the browser tab favicon
     layout="wide"
 )
 
-# --- IIT INDORE OFFICIAL COBALT BLUE PALETTE BRANDING ENGINE ---
-# Primary Cobalt Blue: #003396 | Accent Slate: #566573 | Light Ice Blue Sidebar: #F0F4F8
+# --- IIT INDORE OFFICIAL COBALT BLUE & LIGHT BLUE BACKGROUND PALETTE BRANDING ENGINE ---
+# Primary Cobalt Blue: #003396 | Accent Slate: #566573 | Sidebar: #F0F4F8 | Page Background: #EBF2FA
 custom_theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&display=swap');
+
+    /* Custom main page background configuration */
+    .stApp {
+        background-color: #EBF2FA !important;
+    }
 
     /* Global typography settings */
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, h4, h5, h6, label, div {
@@ -41,6 +46,21 @@ custom_theme_css = """
     [data-testid="stSidebar"] {
         background-color: #F0F4F8 !important;
         border-right: 2px solid #003396;
+    }
+
+    /* Custom Footnote CSS Styling */
+    .footer {
+        width: 100%;
+        text-align: center;
+        color: #566573;
+        font-size: 0.95rem;
+        padding-top: 30px;
+        padding-bottom: 10px;
+        border-top: 1px solid #D5D8DC;
+        margin-top: 40px;
+    }
+    .footer strong {
+        color: #003396;
     }
 </style>
 """
@@ -147,7 +167,7 @@ if filtered_df.empty:
 
 # --- HOME PAGE ALL-DETAILS SUMMARY SNAPSHOT ---
 st.markdown("---")
-st.subheader(f"📊 Weather Summary Overview Dashboard ({start_date} to {end_date})")
+st.subheader(f"Weather Summary Overview Dashboard ({start_date} to {end_date})")
 st.markdown("Here is the complete overview of all station parameters over your selected timeline window:")
 
 card1, card2, card3, card4, card5 = st.columns(5)
@@ -191,7 +211,6 @@ if selected_label == "Wind Direction (Compass)":
     st.subheader(f"Wind Direction Frequency Distribution ({start_date} to {end_date})")
     st.markdown("This chart counts how often the wind blew from each compass direction over your selected timeframe.")
     
-    # Styled with IIT Indore Cobalt Blue (#003396)
     direction_chart = alt.Chart(filtered_df).mark_bar(color="#003396").encode(
         x=alt.X('Wind Direction:N', sort='-y', title="Wind Direction Categories"),
         y=alt.Y('count():Q', title="Total Frequency / Readings Count"),
@@ -259,7 +278,6 @@ st.subheader("Diurnal Parameter Cycle Inspector")
 filtered_df['Hour'] = filtered_df['Timestamp'].dt.hour
 hourly_agg = filtered_df.groupby('Hour')[target_column].mean().reset_index()
 
-# Colored in an elegant, translucent blend of Cobalt Blue (#003396)
 hourly_chart = alt.Chart(hourly_agg).mark_area(
     color="#003396",
     opacity=0.3,
@@ -290,3 +308,11 @@ with st.expander("View and Download Filtered Local Station Records"):
         file_name=f"IITI_Filtered_Data_{start_date}_to_{end_date}.csv",
         mime="text/csv"
     )
+
+# --- INSTITUTIONAL ATTRIBUTION FOOTNOTE ---
+footer_html = """
+<div class="footer">
+    Created and Maintained by <strong>Buddhodev Ghosh</strong> (Doctoral Candidate Under <strong>Prof. G S Murthy</strong>, Sustainable Technologies Lab, IIT Indore)
+</div>
+"""
+st.markdown(footer_html, unsafe_allow_html=True)
