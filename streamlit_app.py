@@ -10,8 +10,8 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- IIT INDORE OFFICIAL PALETTE BRANDING ENGINE ---
-# Primary Teal: #008080 | Accent Amber: #D4AF37 | Light Slate Background: #F4F6F6
+# --- IIT INDORE OFFICIAL COBALT BLUE PALETTE BRANDING ENGINE ---
+# Primary Cobalt Blue: #003396 | Accent Slate: #566573 | Light Ice Blue Sidebar: #F0F4F8
 custom_theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&display=swap');
@@ -21,26 +21,26 @@ custom_theme_css = """
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
     }
 
-    /* Primary Heading color accent modification */
+    /* Primary Heading color accent modification to Cobalt Blue */
     h1, h2, h3 {
-        color: #006666 !important;
+        color: #003396 !important;
     }
 
     /* Custom modifications to the Streamlit Metric display cards */
     [data-testid="stMetricValue"] {
-        color: #008080 !important;
+        color: #003396 !important;
         font-weight: bold;
     }
     
     [data-testid="stMetricLabel"] {
-        color: #4A4A4A !important;
+        color: #2C3E50 !important;
         font-size: 1.1rem !important;
     }
 
     /* Sidebar background panel custom styling tint */
     [data-testid="stSidebar"] {
-        background-color: #E6F2F2 !important;
-        border-right: 2px solid #008080;
+        background-color: #F0F4F8 !important;
+        border-right: 2px solid #003396;
     }
 </style>
 """
@@ -191,8 +191,8 @@ if selected_label == "Wind Direction (Compass)":
     st.subheader(f"Wind Direction Frequency Distribution ({start_date} to {end_date})")
     st.markdown("This chart counts how often the wind blew from each compass direction over your selected timeframe.")
     
-    # Styled with IIT Indore Brand Teal (#008080)
-    direction_chart = alt.Chart(filtered_df).mark_bar(color="#008080").encode(
+    # Styled with IIT Indore Cobalt Blue (#003396)
+    direction_chart = alt.Chart(filtered_df).mark_bar(color="#003396").encode(
         x=alt.X('Wind Direction:N', sort='-y', title="Wind Direction Categories"),
         y=alt.Y('count():Q', title="Total Frequency / Readings Count"),
         tooltip=['Wind Direction:N', 'count():Q']
@@ -215,8 +215,8 @@ else:
 
     brush = alt.selection_interval(encodings=['x'])
 
-    # Chart A: Top Timeline Trend Graph - Colored in deep IITI Teal (#006666)
-    timeline_chart = alt.Chart(filtered_df).mark_line(color="#006666", interpolate='monotone').encode(
+    # Chart A: Top Timeline Trend Graph - Colored in deep Cobalt Blue (#003396)
+    timeline_chart = alt.Chart(filtered_df).mark_line(color="#003396", interpolate='monotone').encode(
         x=alt.X('Timestamp:T', title="Timeline Axis"),
         y=alt.Y(f'{target_column}:Q', title=selected_label),
         tooltip=['Timestamp:T', f'{target_column}:Q']
@@ -228,8 +228,8 @@ else:
         brush
     )
 
-    # Chart B: Bottom Distribution Histogram - Colored in coordinating IITI Gold/Amber (#D4AF37)
-    distribution_chart = alt.Chart(filtered_df).mark_bar(color="#D4AF37").encode(
+    # Chart B: Bottom Distribution Histogram - Colored in Slate Gray (#566573)
+    distribution_chart = alt.Chart(filtered_df).mark_bar(color="#566573").encode(
         x=alt.X(f'{target_column}:Q', bin=alt.Bin(maxbins=30), title=f"Value Scale Ranges ({selected_label})"),
         y=alt.Y('count()', title="Occurrences / Observations Count"),
         tooltip=['count()']
@@ -259,11 +259,11 @@ st.subheader("Diurnal Parameter Cycle Inspector")
 filtered_df['Hour'] = filtered_df['Timestamp'].dt.hour
 hourly_agg = filtered_df.groupby('Hour')[target_column].mean().reset_index()
 
-# Colored in an elegant, translucent blend of IITI Teal (#008080)
+# Colored in an elegant, translucent blend of Cobalt Blue (#003396)
 hourly_chart = alt.Chart(hourly_agg).mark_area(
-    color="#008080",
-    opacity=0.4,
-    line={'color': '#006666'}
+    color="#003396",
+    opacity=0.3,
+    line={'color': '#003396'}
 ).encode(
     x=alt.X('Hour:Q', title="Hour of Day (24hr Clock)", scale=alt.Scale(domain=[0, 23])),
     y=alt.Y(f'{target_column}:Q', title=f"Mean {selected_label}"),
