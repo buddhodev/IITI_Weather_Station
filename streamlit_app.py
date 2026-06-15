@@ -10,17 +10,41 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- TIRO DEVANAGARI SANSKRIT FONT CONFIGURATION ENGINE ---
-custom_font_css = """
+# --- IIT INDORE OFFICIAL PALETTE BRANDING ENGINE ---
+# Primary Teal: #008080 | Accent Amber: #D4AF37 | Light Slate Background: #F4F6F6
+custom_theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&display=swap');
 
+    /* Global typography settings */
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, h4, h5, h6, label, div {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
     }
+
+    /* Primary Heading color accent modification */
+    h1, h2, h3 {
+        color: #006666 !important;
+    }
+
+    /* Custom modifications to the Streamlit Metric display cards */
+    [data-testid="stMetricValue"] {
+        color: #008080 !important;
+        font-weight: bold;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        color: #4A4A4A !important;
+        font-size: 1.1rem !important;
+    }
+
+    /* Sidebar background panel custom styling tint */
+    [data-testid="stSidebar"] {
+        background-color: #E6F2F2 !important;
+        border-right: 2px solid #008080;
+    }
 </style>
 """
-st.markdown(custom_font_css, unsafe_allow_html=True)
+st.markdown(custom_theme_css, unsafe_allow_html=True)
 
 # Add the uploaded logo dynamically into the main dashboard page banner header
 col_header_logo, col_header_title = st.columns([1, 10])
@@ -103,7 +127,7 @@ else:
     filtered_df = df
     start_date, end_date = min_available_date, max_available_date
 
-# 2. Variable Selector Map (For the interactive graphing panel below)
+# 2. Variable Selector Map
 st.sidebar.subheader("Metric Graph Selector")
 metric_options = {
     "Rainfall (mm)": "Rain",
@@ -121,12 +145,11 @@ if filtered_df.empty:
     st.warning(f"No meteorological entries found between {start_date} and {end_date}. Please choose a wider window in the sidebar.")
     st.stop()
 
-# --- NEW FEATURE: HOME PAGE ALL-DETAILS SUMMARY SNAPSHOT ---
+# --- HOME PAGE ALL-DETAILS SUMMARY SNAPSHOT ---
 st.markdown("---")
 st.subheader(f"📊 Weather Summary Overview Dashboard ({start_date} to {end_date})")
 st.markdown("Here is the complete overview of all station parameters over your selected timeline window:")
 
-# Create a clean 5-column layout structure to display all elements together
 card1, card2, card3, card4, card5 = st.columns(5)
 
 with card1:
@@ -168,7 +191,8 @@ if selected_label == "Wind Direction (Compass)":
     st.subheader(f"Wind Direction Frequency Distribution ({start_date} to {end_date})")
     st.markdown("This chart counts how often the wind blew from each compass direction over your selected timeframe.")
     
-    direction_chart = alt.Chart(filtered_df).mark_bar(color="#4c78a8").encode(
+    # Styled with IIT Indore Brand Teal (#008080)
+    direction_chart = alt.Chart(filtered_df).mark_bar(color="#008080").encode(
         x=alt.X('Wind Direction:N', sort='-y', title="Wind Direction Categories"),
         y=alt.Y('count():Q', title="Total Frequency / Readings Count"),
         tooltip=['Wind Direction:N', 'count():Q']
@@ -191,8 +215,8 @@ else:
 
     brush = alt.selection_interval(encodings=['x'])
 
-    # Chart A: Top Timeline Trend Graph
-    timeline_chart = alt.Chart(filtered_df).mark_line(color="#1f77b4", interpolate='monotone').encode(
+    # Chart A: Top Timeline Trend Graph - Colored in deep IITI Teal (#006666)
+    timeline_chart = alt.Chart(filtered_df).mark_line(color="#006666", interpolate='monotone').encode(
         x=alt.X('Timestamp:T', title="Timeline Axis"),
         y=alt.Y(f'{target_column}:Q', title=selected_label),
         tooltip=['Timestamp:T', f'{target_column}:Q']
@@ -204,8 +228,8 @@ else:
         brush
     )
 
-    # Chart B: Bottom Distribution Histogram
-    distribution_chart = alt.Chart(filtered_df).mark_bar(color="#e7ba52").encode(
+    # Chart B: Bottom Distribution Histogram - Colored in coordinating IITI Gold/Amber (#D4AF37)
+    distribution_chart = alt.Chart(filtered_df).mark_bar(color="#D4AF37").encode(
         x=alt.X(f'{target_column}:Q', bin=alt.Bin(maxbins=30), title=f"Value Scale Ranges ({selected_label})"),
         y=alt.Y('count()', title="Occurrences / Observations Count"),
         tooltip=['count()']
@@ -228,32 +252,33 @@ else:
 
     st.altair_chart(unified_interactive_chart, use_container_width=True)
 
-    # --- CUSTOM HOURLY PROFILER MATRIX ---
-    st.markdown("---")
-    st.subheader("Diurnal Parameter Cycle Inspector")
+# --- CUSTOM HOURLY PROFILER MATRIX ---
+st.markdown("---")
+st.subheader("Diurnal Parameter Cycle Inspector")
 
-    filtered_df['Hour'] = filtered_df['Timestamp'].dt.hour
-    hourly_agg = filtered_df.groupby('Hour')[target_column].mean().reset_index()
+filtered_df['Hour'] = filtered_df['Timestamp'].dt.hour
+hourly_agg = filtered_df.groupby('Hour')[target_column].mean().reset_index()
 
-    hourly_chart = alt.Chart(hourly_agg).mark_area(
-        color="#aec7e8",
-        opacity=0.6,
-        line={'color': '#1f77b4'}
-    ).encode(
-        x=alt.X('Hour:Q', title="Hour of Day (24hr Clock)", scale=alt.Scale(domain=[0, 23])),
-        y=alt.Y(f'{target_column}:Q', title=f"Mean {selected_label}"),
-        tooltip=['Hour', f'{target_column}']
-    ).properties(
-        height=250,
-        title=f"Average 24-Hour Diurnal Progression Signature for {selected_label}"
-    ).configure_axis(
+# Colored in an elegant, translucent blend of IITI Teal (#008080)
+hourly_chart = alt.Chart(hourly_agg).mark_area(
+    color="#008080",
+    opacity=0.4,
+    line={'color': '#006666'}
+).encode(
+    x=alt.X('Hour:Q', title="Hour of Day (24hr Clock)", scale=alt.Scale(domain=[0, 23])),
+    y=alt.Y(f'{target_column}:Q', title=f"Mean {selected_label}"),
+    tooltip=['Hour', f'{target_column}']
+).properties(
+    height=250,
+    title=f"Average 24-Hour Diurnal Progression Signature for {selected_label}"
+).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
         titleFont='Tiro Devanagari Sanskrit'
-    ).configure_title(
+).configure_title(
         font='Tiro Devanagari Sanskrit'
-    )
+)
 
-    st.altair_chart(hourly_chart, use_container_width=True)
+st.altair_chart(hourly_chart, use_container_width=True)
 
 # --- CLEAN DATA VIEW / EXPORT ENGINE ---
 st.markdown("---")
