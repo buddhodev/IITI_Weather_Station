@@ -1,0 +1,21 @@
+@st.cache_data(ttl=600) # This tells the app to refresh and check for new data every 10 minutes
+def load_and_preprocess_data():
+    # Replace this with the actual URL of your Google Sheet
+    share_url = "https://docs.google.com/spreadsheets/d/1OuNO5Er2ZbjF3fWpDj7c7hPxtfqFRXbWpGS7t-xAkMA/edit?usp=sharing"
+    # This mathematical trick converts a standard edit URL into a clean CSV export link
+    csv_url = share_url.replace("/edit?usp=sharing", "/export?format=csv")
+    
+    # Streamlit pulls the sheet live from your drive
+    df = pd.read_csv(csv_url)
+    
+    # Clean column spacing artifacts
+    df.columns = df.columns.str.strip()
+    df['Timestamp'] = pd.to_datetime(df['Timestamp'], errors='coerce')
+    df = df.dropna(subset=['Timestamp']).sort_values('Timestamp')
+    
+    metric_cols = ["Rainfall (mm)", "Temp_Avg", "Temp_Max", "Temp_Min", "Solar_Rad", "RH_Avg"]
+    for col in metric_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+            
+    return df
