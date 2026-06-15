@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="IIT Indore Weather Station Dashboard",
-    page_icon="image_ad4426.png",  # Uses your uploaded logo for the browser tab favicon
+    page_icon="WQgH_yKt.png",  # Uses your uploaded logo for the browser tab favicon
     layout="wide"
 )
 
