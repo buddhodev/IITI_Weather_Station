@@ -83,16 +83,13 @@ custom_theme_css = """
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
     }
 
-    /* DIRECT FIXED SELECTOR FOR EXPANDER: Protects native functional arrow buttons from breaking */
-    .stExpander details summary {
-        font-family: system-ui, -apple-system, sans-serif !important;
-    }
-
-    /* Apply the custom font and color strictly to the text label inside the expander bar */
-    .stExpander details summary p, .stExpander details summary span {
+    /* EXPLICIT CLEAN FIX FOR THE DATA EXPANDER CONTAINER */
+    .styled-expander-text {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
         color: #003396 !important;
         font-weight: bold !important;
+        font-size: 1.1rem !important;
+        display: inline-block;
     }
 </style>
 """
@@ -363,8 +360,9 @@ st.altair_chart(hourly_chart, use_container_width=True)
 
 # --- CLEAN DATA VIEW / EXPORT ENGINE ---
 st.markdown("---")
-# Native interactive expander handles toggle commands seamlessly while targeted CSS forces clean typography
-with st.expander("View and Download Filtered Local Station Records"):
+# Clean HTML span wrapper inside standard st.expander securely shields native layout vector chevrons from typography bugs
+with st.expander(label="&nbsp;"):
+    st.markdown('<p class="styled-expander-text" style="margin-top: -42px; margin-left: 25px; position: absolute;">View and Download Filtered Local Station Records</p>', unsafe_allow_html=True)
     st.dataframe(filtered_df.drop(columns=['Just_Date']))
     st.download_button(
         label="Download This Filtered Dataset (CSV)",
