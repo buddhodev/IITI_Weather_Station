@@ -20,19 +20,18 @@ custom_theme_css = """
         background-color: #EBF2FA !important;
     }
 
-    /* Global typography settings - explicitly forcing dark text to avoid white text bugs */
-    html, body, [class*="css"], .stMarkdown, p, label, div, span, button, summary {
-        font-family: 'Tiro Devanagari Sanskrit', serif !important;
-        color: #2C3E50 !important;
-    }
-
-    /* Primary Heading color accent modification to Cobalt Blue */
-    h1, h2, h3, h4, h5, h6 {
+    /* Target specific markdown and text paragraphs safely without breaking core icon engines */
+    h1, h2, h3, h4, h5, h6, .stMarkdown p, .stMarkdown span {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
         color: #003396 !important;
     }
+    
+    /* Global labels fallback adjustment */
+    label, p, span {
+        font-family: 'Tiro Devanagari Sanskrit', serif !important;
+    }
 
-    /* Universal Streamlit Metric Card Elements Override */
+    /* Universal Clean Metric Card Design - No pitch-black blocks */
     div[data-testid="stMetric"] {
         background-color: #FFFFFF !important;
         padding: 15px !important;
@@ -41,21 +40,20 @@ custom_theme_css = """
         border: 1px solid #D5D8DC !important;
     }
     
-    div[data-testid="stMetricValue"], div[data-testid="stMetricValue"] > div {
+    /* Primary numeric metric color adjustment to IIT Indore Corporate Blue */
+    div[data-testid="stMetricValue"] {
         color: #003396 !important;
         font-weight: bold !important;
         font-size: 1.8rem !important;
+        font-family: 'Tiro Devanagari Sanskrit', serif !important;
     }
     
-    div[data-testid="stMetricLabel"], div[data-testid="stMetricLabel"] > label, div[data-testid="stMetricLabel"] p {
-        color: #2C3E50 !important;
+    /* Custom metric structural labels changed from grey to clean Blue */
+    div[data-testid="stMetricLabel"] p {
+        color: #003396 !important;
         font-size: 1.05rem !important;
-        font-weight: 500 !important;
-    }
-
-    /* Target Delta wrappers directly to fix broken icons and background anomalies */
-    div[data-testid="stMetricDelta"], div[data-testid="stMetricDelta"] * {
-        font-family: 'Tiro Devanagari Sanskrit', serif !important;
+        font-weight: bold !important;
+        margin-bottom: 0px !important;
     }
 
     /* Sidebar background panel custom styling tint */
@@ -64,8 +62,10 @@ custom_theme_css = """
         border-right: 2px solid #003396;
     }
     
-    [data-testid="stSidebar"] * {
-        color: #2C3E50 !important;
+    /* Keep sidebar navigation settings easily readable in corporate theme tones */
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] label {
+        color: #003396 !important;
+        font-weight: bold !important;
     }
 
     /* Custom Footnote CSS Styling */
@@ -242,8 +242,8 @@ if selected_label == "Wind Direction (Compass)":
     ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
         titleFont='Tiro Devanagari Sanskrit',
-        labelColor='#2C3E50',
-        titleColor='#2C3E50'
+        labelColor='#003396',
+        titleColor='#003396'
     ).configure_title(
         font='Tiro Devanagari Sanskrit',
         color='#003396'
@@ -288,8 +288,8 @@ else:
     ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
         titleFont='Tiro Devanagari Sanskrit',
-        labelColor='#2C3E50',
-        titleColor='#2C3E50'
+        labelColor='#003396',
+        titleColor='#003396'
     ).configure_title(
         font='Tiro Devanagari Sanskrit',
         color='#003396'
@@ -321,8 +321,8 @@ if pd.api.types.is_numeric_dtype(filtered_df[target_column]):
     ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
         titleFont='Tiro Devanagari Sanskrit',
-        labelColor='#2C3E50',
-        titleColor='#2C3E50'
+        labelColor='#003396',
+        titleColor='#003396'
     ).configure_title(
         font='Tiro Devanagari Sanskrit',
         color='#003396'
@@ -340,8 +340,8 @@ else:
     ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
         titleFont='Tiro Devanagari Sanskrit',
-        labelColor='#2C3E50',
-        titleColor='#2C3E50'
+        labelColor='#003396',
+        titleColor='#003396'
     ).configure_title(
         font='Tiro Devanagari Sanskrit',
         color='#003396'
