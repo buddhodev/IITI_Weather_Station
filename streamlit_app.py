@@ -31,12 +31,6 @@ custom_theme_css = """
         color: #003396 !important;
     }
 
-    /* STRICT FIX: Completely insulate all Streamlit internal icons and arrows from font distortion */
-    svg, [data-testid="stIcon"], [class*="Icon"], [class*="icon"], button i, 
-    .st-emotion-cache-pctg7a, .st-emotion-cache-15w70up {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    }
-
     /* Universal Clean Metric Card Design - No pitch-black blocks */
     div[data-testid="stMetric"] {
         background-color: #FFFFFF !important;
@@ -89,23 +83,16 @@ custom_theme_css = """
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
     }
 
-    /* Native Clean Expander Styling - strictly isolated from global engine bugs */
-    .custom-expander-panel {
-        background-color: #FFFFFF;
-        border: 1px solid #D5D8DC;
-        border-radius: 8px;
-        padding: 12px 18px;
-        margin-top: 10px;
+    /* DIRECT FIXED SELECTOR FOR EXPANDER: Protects native functional arrow buttons from breaking */
+    .stExpander details summary {
+        font-family: system-ui, -apple-system, sans-serif !important;
     }
 
-    .custom-expander-panel summary {
+    /* Apply the custom font and color strictly to the text label inside the expander bar */
+    .stExpander details summary p, .stExpander details summary span {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
         color: #003396 !important;
         font-weight: bold !important;
-        font-size: 1.1rem;
-        cursor: pointer;
-        outline: none;
-        user-select: none;
     }
 </style>
 """
@@ -376,22 +363,15 @@ st.altair_chart(hourly_chart, use_container_width=True)
 
 # --- CLEAN DATA VIEW / EXPORT ENGINE ---
 st.markdown("---")
-# Custom standalone panel completely fixes text overlapping with the built-in expander element
-st.markdown("""
-<details class="custom-expander-panel">
-    <summary>View and Download Filtered Local Station Records</summary>
-    <div style="padding-top: 15px;"></div>
-""", unsafe_allow_html=True)
-
-st.dataframe(filtered_df.drop(columns=['Just_Date']))
-st.download_button(
-    label="Download This Filtered Dataset (CSV)",
-    data=filtered_df.drop(columns=['Just_Date']).to_csv(index=False).encode('utf-8'),
-    file_name=f"IITI_Filtered_Data_{start_date}_to_{end_date}.csv",
-    mime="text/csv"
-)
-
-st.markdown("</details>", unsafe_allow_html=True)
+# Native interactive expander handles toggle commands seamlessly while targeted CSS forces clean typography
+with st.expander("View and Download Filtered Local Station Records"):
+    st.dataframe(filtered_df.drop(columns=['Just_Date']))
+    st.download_button(
+        label="Download This Filtered Dataset (CSV)",
+        data=filtered_df.drop(columns=['Just_Date']).to_csv(index=False).encode('utf-8'),
+        file_name=f"IITI_Filtered_Data_{start_date}_to_{end_date}.csv",
+        mime="text/csv"
+    )
 
 # --- INSTITUTIONAL ATTRIBUTION FOOTNOTE ---
 st.markdown("---")
