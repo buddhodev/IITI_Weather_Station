@@ -32,15 +32,30 @@ custom_theme_css = """
         color: #003396 !important;
     }
 
-    /* Custom modifications to the Streamlit Metric display cards */
-    [data-testid="stMetricValue"] {
-        color: #003396 !important;
-        font-weight: bold;
+    /* Universal Streamlit Metric Card Elements Override */
+    div[data-testid="stMetric"] {
+        background-color: #FFFFFF !important;
+        padding: 15px !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+        border: 1px solid #D5D8DC !important;
     }
     
-    [data-testid="stMetricLabel"] {
+    div[data-testid="stMetricValue"], div[data-testid="stMetricValue"] > div {
+        color: #003396 !important;
+        font-weight: bold !important;
+        font-size: 1.8rem !important;
+    }
+    
+    div[data-testid="stMetricLabel"], div[data-testid="stMetricLabel"] > label, div[data-testid="stMetricLabel"] p {
         color: #2C3E50 !important;
-        font-size: 1.1rem !important;
+        font-size: 1.05rem !important;
+        font-weight: 500 !important;
+    }
+
+    /* Target Delta wrappers directly to fix broken icons and background anomalies */
+    div[data-testid="stMetricDelta"], div[data-testid="stMetricDelta"] * {
+        font-family: 'Tiro Devanagari Sanskrit', serif !important;
     }
 
     /* Sidebar background panel custom styling tint */
