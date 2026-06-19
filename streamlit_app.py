@@ -11,7 +11,6 @@ st.set_page_config(
 )
 
 # --- IIT INDORE OFFICIAL COBALT BLUE & LIGHT BLUE BACKGROUND PALETTE BRANDING ENGINE ---
-# Primary Cobalt Blue: #003396 | Accent Slate: #566573 | Sidebar: #F0F4F8 | Page Background: #EBF2FA
 custom_theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&display=swap');
@@ -142,9 +141,9 @@ date_range = st.sidebar.date_input(
 
 if isinstance(date_range, tuple) and len(date_range) == 2:
     start_date, end_date = date_range
-    filtered_df = df[(df['Just_Date'] >= start_date) & (df['Just_Date'] <= end_date)]
+    filtered_df = df[(df['Just_Date'] >= start_date) & (df['Just_Date'] <= end_date)].copy()
 else:
-    filtered_df = df
+    filtered_df = df.copy()
     start_date, end_date = min_available_date, max_available_date
 
 # 2. Variable Selector Map
@@ -276,25 +275,44 @@ st.markdown("---")
 st.subheader("Diurnal Parameter Cycle Inspector")
 
 filtered_df['Hour'] = filtered_df['Timestamp'].dt.hour
-hourly_agg = filtered_df.groupby('Hour')[target_column].mean().reset_index()
 
-hourly_chart = alt.Chart(hourly_agg).mark_area(
-    color="#003396",
-    opacity=0.3,
-    line={'color': '#003396'}
-).encode(
-    x=alt.X('Hour:Q', title="Hour of Day (24hr Clock)", scale=alt.Scale(domain=[0, 23])),
-    y=alt.Y(f'{target_column}:Q', title=f"Mean {selected_label}"),
-    tooltip=['Hour', f'{target_column}']
-).properties(
-    height=250,
-    title=f"Average 24-Hour Diurnal Progression Signature for {selected_label}"
-).configure_axis(
+# Safe evaluation to protect against trying to calculate numeric averages on categorical string data
+if pd.api.types.is_numeric_dtype(filtered_df[target_column]):
+    hourly_agg = filtered_df.groupby('Hour')[target_column].mean().reset_index()
+
+    hourly_chart = alt.Chart(hourly_agg).mark_area(
+        color="#003396",
+        opacity=0.3,
+        line={'color': '#003396'}
+    ).encode(
+        x=alt.X('Hour:Q', title="Hour of Day (24hr Clock)", scale=alt.Scale(domain=[0, 23])),
+        y=alt.Y(f'{target_column}:Q', title=f"Mean {selected_label}"),
+        tooltip=['Hour', f'{target_column}']
+    ).properties(
+        height=250,
+        title=f"Average 24-Hour Diurnal Progression Signature for {selected_label}"
+    ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
         titleFont='Tiro Devanagari Sanskrit'
-).configure_title(
+    ).configure_title(
         font='Tiro Devanagari Sanskrit'
-)
+    )
+else:
+    # Alternative visualization fallback for Wind Direction categorical trend by Hour
+    hourly_chart = alt.Chart(filtered_df).mark_rect().encode(
+        x=alt.X('Hour:O', title="Hour of Day (24hr Clock)"),
+        y=alt.X('Wind Direction:N', title="Wind Direction"),
+        color=alt.Color('count():Q', scale=alt.Scale(scheme='blues'), title="Reading Count"),
+        tooltip=['Hour', 'Wind Direction', 'count()']
+    ).properties(
+        height=250,
+        title="Hourly Distribution Density Matrix for Wind Directions"
+    ).configure_axis(
+        labelFont='Tiro Devanagari Sanskrit',
+        titleFont='Tiro Devanagari Sanskrit'
+    ).configure_title(
+        font='Tiro Devanagari Sanskrit'
+    )
 
 st.altair_chart(hourly_chart, use_container_width=True)
 
