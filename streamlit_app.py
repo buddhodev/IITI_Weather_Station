@@ -27,8 +27,20 @@ custom_theme_css = """
     }
     
     /* Global labels fallback adjustment */
-    label, p, span {
+    p, span, label {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
+    }
+
+    /* CRITICAL FIX: Protect Streamlit core icons from font-family distortion (prevents overlapping/broken arrows) */
+    svg, [data-testid="stIcon"], .st-emotion-cache-pctg7a, .st-emotion-cache-15w70up, [data-testid="stExpander"] svg {
+        font-family: sans-serif !important;
+    }
+
+    /* Target Expander labels to keep text neat and colored in themed blue */
+    [data-testid="stExpander"] summary p, [data-testid="stExpander"] summary span {
+        font-family: 'Tiro Devanagari Sanskrit', serif !important;
+        color: #003396 !important;
+        font-weight: bold !important;
     }
 
     /* Universal Clean Metric Card Design - No pitch-black blocks */
