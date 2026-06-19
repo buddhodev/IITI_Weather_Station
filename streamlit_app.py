@@ -20,13 +20,15 @@ custom_theme_css = """
         background-color: #EBF2FA !important;
     }
 
-    /* Global typography settings */
-    html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, h4, h5, h6, label, div {
+    /* Global typography settings - explicitly forcing dark text to avoid white text bugs */
+    html, body, [class*="css"], .stMarkdown, p, label, div, span, button, summary {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
+        color: #2C3E50 !important;
     }
 
     /* Primary Heading color accent modification to Cobalt Blue */
-    h1, h2, h3 {
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Tiro Devanagari Sanskrit', serif !important;
         color: #003396 !important;
     }
 
@@ -46,12 +48,16 @@ custom_theme_css = """
         background-color: #F0F4F8 !important;
         border-right: 2px solid #003396;
     }
+    
+    [data-testid="stSidebar"] * {
+        color: #2C3E50 !important;
+    }
 
     /* Custom Footnote CSS Styling */
     .footer {
         width: 100%;
         text-align: center;
-        color: #566573;
+        color: #566573 !important;
         font-size: 0.95rem;
         padding-top: 30px;
         padding-bottom: 10px;
@@ -59,7 +65,7 @@ custom_theme_css = """
         margin-top: 40px;
     }
     .footer strong {
-        color: #003396;
+        color: #003396 !important;
     }
 </style>
 """
@@ -220,9 +226,12 @@ if selected_label == "Wind Direction (Compass)":
         title="Dominant Wind Profiles at IIT Indore"
     ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
-        titleFont='Tiro Devanagari Sanskrit'
+        titleFont='Tiro Devanagari Sanskrit',
+        labelColor='#2C3E50',
+        titleColor='#2C3E50'
     ).configure_title(
-        font='Tiro Devanagari Sanskrit'
+        font='Tiro Devanagari Sanskrit',
+        color='#003396'
     )
     
     st.altair_chart(direction_chart, use_container_width=True)
@@ -263,9 +272,12 @@ else:
         strokeWidth=0
     ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
-        titleFont='Tiro Devanagari Sanskrit'
+        titleFont='Tiro Devanagari Sanskrit',
+        labelColor='#2C3E50',
+        titleColor='#2C3E50'
     ).configure_title(
-        font='Tiro Devanagari Sanskrit'
+        font='Tiro Devanagari Sanskrit',
+        color='#003396'
     )
 
     st.altair_chart(unified_interactive_chart, use_container_width=True)
@@ -293,9 +305,12 @@ if pd.api.types.is_numeric_dtype(filtered_df[target_column]):
         title=f"Average 24-Hour Diurnal Progression Signature for {selected_label}"
     ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
-        titleFont='Tiro Devanagari Sanskrit'
+        titleFont='Tiro Devanagari Sanskrit',
+        labelColor='#2C3E50',
+        titleColor='#2C3E50'
     ).configure_title(
-        font='Tiro Devanagari Sanskrit'
+        font='Tiro Devanagari Sanskrit',
+        color='#003396'
     )
 else:
     # Alternative visualization fallback for Wind Direction categorical trend by Hour
@@ -309,9 +324,12 @@ else:
         title="Hourly Distribution Density Matrix for Wind Directions"
     ).configure_axis(
         labelFont='Tiro Devanagari Sanskrit',
-        titleFont='Tiro Devanagari Sanskrit'
+        titleFont='Tiro Devanagari Sanskrit',
+        labelColor='#2C3E50',
+        titleColor='#2C3E50'
     ).configure_title(
-        font='Tiro Devanagari Sanskrit'
+        font='Tiro Devanagari Sanskrit',
+        color='#003396'
     )
 
 st.altair_chart(hourly_chart, use_container_width=True)
