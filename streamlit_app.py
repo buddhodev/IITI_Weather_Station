@@ -10,12 +10,19 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- IIT INDORE OFFICIAL COBALT BLUE & LIGHT BLUE BACKGROUND PALETTE BRANDING ENGINE ---
+# --- IIT INDORE OFFICIAL COBALT BLUE LIGHT-MODE BRADING ENGINE ---
 custom_theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&display=swap');
 
-    /* Custom main page background configuration */
+    /* STRICT LIGHT-MODE ENFORCEMENT ENGINE - Overrides user dark mode system preferences */
+    :root {
+        --primary-color: #003396;
+        --background-color: #EBF2FA;
+        --secondary-background-color: #F0F4F8;
+        --text-color: #2C3E50;
+    }
+
     .stApp {
         background-color: #EBF2FA !important;
     }
@@ -83,13 +90,14 @@ custom_theme_css = """
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
     }
 
-    /* EXPLICIT CLEAN FIX FOR THE DATA EXPANDER CONTAINER */
-    .styled-expander-text {
+    /* EXPANDER FIX: Forces text visibility and correct spacing inside both expanded and collapsed state buttons */
+    [data-testid="stExpander"] details summary p, 
+    [data-testid="stExpander"] details summary span,
+    [data-testid="stExpander"] p {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
         color: #003396 !important;
         font-weight: bold !important;
-        font-size: 1.1rem !important;
-        display: inline-block;
+        font-size: 1.05rem !important;
     }
 </style>
 """
@@ -360,9 +368,8 @@ st.altair_chart(hourly_chart, use_container_width=True)
 
 # --- CLEAN DATA VIEW / EXPORT ENGINE ---
 st.markdown("---")
-# Clean HTML span wrapper inside standard st.expander securely shields native layout vector chevrons from typography bugs
-with st.expander(label="&nbsp;"):
-    st.markdown('<p class="styled-expander-text" style="margin-top: -42px; margin-left: 25px; position: absolute;">View and Download Filtered Local Station Records</p>', unsafe_allow_html=True)
+# Clean native layout container resolves visibility bugs across active tracking toggles
+with st.expander("View and Download Filtered Local Station Records"):
     st.dataframe(filtered_df.drop(columns=['Just_Date']))
     st.download_button(
         label="Download This Filtered Dataset (CSV)",
