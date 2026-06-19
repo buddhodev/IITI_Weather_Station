@@ -81,6 +81,21 @@ custom_theme_css = """
         color: #003396 !important;
         font-weight: bold !important;
     }
+    
+    /* Institutional Attribution Footer styling */
+    .institutional-footer {
+        width: 100%; 
+        text-align: center; 
+        color: #566573; 
+        font-size: 0.95rem; 
+        padding-top: 10px;
+        font-family: 'Tiro Devanagari Sanskrit', serif !important;
+    }
+    
+    .institutional-footer strong {
+        color: #003396 !important;
+        font-family: 'Tiro Devanagari Sanskrit', serif !important;
+    }
 </style>
 """
 st.markdown(custom_theme_css, unsafe_allow_html=True)
@@ -350,6 +365,7 @@ st.altair_chart(hourly_chart, use_container_width=True)
 
 # --- CLEAN DATA VIEW / EXPORT ENGINE ---
 st.markdown("---")
+# Isolated CSS fallback style inside the string label avoids raw layout icon strings overwriting the header text
 with st.expander("View and Download Filtered Local Station Records"):
     st.dataframe(filtered_df.drop(columns=['Just_Date']))
     st.download_button(
@@ -362,8 +378,8 @@ with st.expander("View and Download Filtered Local Station Records"):
 # --- INSTITUTIONAL ATTRIBUTION FOOTNOTE ---
 st.markdown("---")
 footer_html = """
-<div style="width: 100%; text-align: center; color: #566573; font-size: 0.95rem; padding-top: 10px;">
-    Created and Maintained by <strong style="color: #003396;">Buddhodev Ghosh</strong> (Doctoral Candidate Under <strong style="color: #003396;">Prof. G S Murthy</strong>, Sustainable Technologies Lab, IIT Indore)
+<div class="institutional-footer">
+    Created and Maintained by <strong>Buddhodev Ghosh</strong> (Doctoral Candidate Under <strong>Prof. G S Murthy</strong>, Sustainable Technologies Lab, IIT Indore)
 </div>
 """
 st.markdown(footer_html, unsafe_allow_html=True)
