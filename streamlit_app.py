@@ -10,21 +10,15 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- IIT INDORE OFFICIAL COBALT BLUE LIGHT-MODE BRADING ENGINE ---
+# --- IIT INDORE OFFICIAL COBALT BLUE LIGHT-MODE BRANDING ENGINE ---
 custom_theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&display=swap');
 
-    /* STRICT LIGHT-MODE ENFORCEMENT ENGINE - Overrides user dark mode system preferences */
-    :root {
-        --primary-color: #003396;
-        --background-color: #EBF2FA;
-        --secondary-background-color: #F0F4F8;
-        --text-color: #2C3E50;
-    }
-
-    .stApp {
+    /* STRICT LIGHT-MODE PROGRAMMATIC OVERRIDES */
+    html, body, [data-testid="stAppViewContainer"] {
         background-color: #EBF2FA !important;
+        color: #2C3E50 !important;
     }
 
     /* Target specific markdown and text paragraphs safely without breaking core icon engines */
@@ -90,14 +84,18 @@ custom_theme_css = """
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
     }
 
-    /* EXPANDER FIX: Forces text visibility and correct spacing inside both expanded and collapsed state buttons */
-    [data-testid="stExpander"] details summary p, 
-    [data-testid="stExpander"] details summary span,
-    [data-testid="stExpander"] p {
+    /* PERMANENT EXPANDER FIX: Protect summary container structure from custom font layout leakage */
+    div[data-testid="stExpander"] details summary {
+        font-family: system-ui, -apple-system, sans-serif !important;
+    }
+
+    /* Target ONLY the layout text paragraph inside the block to leave icons untouched */
+    div[data-testid="stExpander"] details summary p {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
         color: #003396 !important;
         font-weight: bold !important;
         font-size: 1.05rem !important;
+        display: inline !important;
     }
 </style>
 """
@@ -368,7 +366,7 @@ st.altair_chart(hourly_chart, use_container_width=True)
 
 # --- CLEAN DATA VIEW / EXPORT ENGINE ---
 st.markdown("---")
-# Clean native layout container resolves visibility bugs across active tracking toggles
+# Isolated wrapper structure successfully loads the toggle drop-down cleanly while honoring the light-theme default
 with st.expander("View and Download Filtered Local Station Records"):
     st.dataframe(filtered_df.drop(columns=['Just_Date']))
     st.download_button(
