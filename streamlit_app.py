@@ -21,22 +21,24 @@ custom_theme_css = """
     }
 
     /* Target specific markdown and text paragraphs safely without breaking core icon engines */
-    h1, h2, h3, h4, h5, h6, .stMarkdown p, .stMarkdown span {
+    h1, h2, h3, h4, h5, h6 {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
         color: #003396 !important;
     }
-    
-    /* Global labels fallback adjustment */
-    p, span, label {
+
+    .custom-blue-text {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
+        color: #003396 !important;
     }
 
-    /* CRITICAL FIX: Protect Streamlit core icons from font-family distortion (prevents overlapping/broken arrows) */
-    svg, [data-testid="stIcon"], .st-emotion-cache-pctg7a, .st-emotion-cache-15w70up, [data-testid="stExpander"] svg {
-        font-family: sans-serif !important;
+    /* STRICT FIX: Completely insulate all Streamlit internal icons and arrows from font distortion */
+    svg, [data-testid="stIcon"], [class*="Icon"], [class*="icon"], button i, 
+    .st-emotion-cache-pctg7a, .st-emotion-cache-15w70up, 
+    [data-testid="stExpander"] [class*="icon"], [data-testid="stMetricDelta"] [class*="icon"] {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
 
-    /* Target Expander labels to keep text neat and colored in themed blue */
+    /* Target Expander headers cleanly - keeping them blue while leaving the toggle icons intact */
     [data-testid="stExpander"] summary p, [data-testid="stExpander"] summary span {
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
         color: #003396 !important;
@@ -79,21 +81,6 @@ custom_theme_css = """
         color: #003396 !important;
         font-weight: bold !important;
     }
-
-    /* Custom Footnote CSS Styling */
-    .footer {
-        width: 100%;
-        text-align: center;
-        color: #566573 !important;
-        font-size: 0.95rem;
-        padding-top: 30px;
-        padding-bottom: 10px;
-        border-top: 1px solid #D5D8DC;
-        margin-top: 40px;
-    }
-    .footer strong {
-        color: #003396 !important;
-    }
 </style>
 """
 st.markdown(custom_theme_css, unsafe_allow_html=True)
@@ -107,7 +94,7 @@ with col_header_logo:
         pass
 with col_header_title:
     st.title("IIT Indore Weather Dashboard")
-    st.markdown("An interactive analysis app exploring microclimatic records from the IIT Indore Station.")
+    st.markdown('<p class="custom-blue-text">An interactive analysis app exploring microclimatic records from the IIT Indore Station.</p>', unsafe_allow_html=True)
 
 # --- LIVE DATA LOADING ENGINE FROM GOOGLE DRIVE ---
 @st.cache_data(ttl=600)  # Refreshes the cache to pull new data every 10 minutes
@@ -200,7 +187,7 @@ if filtered_df.empty:
 # --- HOME PAGE ALL-DETAILS SUMMARY SNAPSHOT ---
 st.markdown("---")
 st.subheader(f"Weather Summary Overview Dashboard ({start_date} to {end_date})")
-st.markdown("Here is the complete overview of all station parameters over your selected timeline window:")
+st.markdown('<p class="custom-blue-text">Here is the complete overview of all station parameters over your selected timeline window:</p>', unsafe_allow_html=True)
 
 card1, card2, card3, card4, card5 = st.columns(5)
 
@@ -241,7 +228,7 @@ st.markdown("---")
 
 if selected_label == "Wind Direction (Compass)":
     st.subheader(f"Wind Direction Frequency Distribution ({start_date} to {end_date})")
-    st.markdown("This chart counts how often the wind blew from each compass direction over your selected timeframe.")
+    st.markdown('<p class="custom-blue-text">This chart counts how often the wind blew from each compass direction over your selected timeframe.</p>', unsafe_allow_html=True)
     
     direction_chart = alt.Chart(filtered_df).mark_bar(color="#003396").encode(
         x=alt.X('Wind Direction:N', sort='-y', title="Wind Direction Categories"),
@@ -373,9 +360,10 @@ with st.expander("View and Download Filtered Local Station Records"):
     )
 
 # --- INSTITUTIONAL ATTRIBUTION FOOTNOTE ---
+st.markdown("---")
 footer_html = """
-<div class="footer">
-    Created and Maintained by <strong>Buddhodev Ghosh</strong> (Doctoral Candidate Under <strong>Prof. G S Murthy</strong>, Sustainable Technologies Lab, IIT Indore)
+<div style="width: 100%; text-align: center; color: #566573; font-size: 0.95rem; padding-top: 10px;">
+    Created and Maintained by <strong style="color: #003396;">Buddhodev Ghosh</strong> (Doctoral Candidate Under <strong style="color: #003396;">Prof. G S Murthy</strong>, Sustainable Technologies Lab, IIT Indore)
 </div>
 """
 st.markdown(footer_html, unsafe_allow_html=True)
