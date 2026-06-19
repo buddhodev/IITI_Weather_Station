@@ -33,16 +33,8 @@ custom_theme_css = """
 
     /* STRICT FIX: Completely insulate all Streamlit internal icons and arrows from font distortion */
     svg, [data-testid="stIcon"], [class*="Icon"], [class*="icon"], button i, 
-    .st-emotion-cache-pctg7a, .st-emotion-cache-15w70up, 
-    [data-testid="stExpander"] [class*="icon"], [data-testid="stMetricDelta"] [class*="icon"] {
+    .st-emotion-cache-pctg7a, .st-emotion-cache-15w70up {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    }
-
-    /* Target Expander headers cleanly - keeping them blue while leaving the toggle icons intact */
-    [data-testid="stExpander"] summary p, [data-testid="stExpander"] summary span {
-        font-family: 'Tiro Devanagari Sanskrit', serif !important;
-        color: #003396 !important;
-        font-weight: bold !important;
     }
 
     /* Universal Clean Metric Card Design - No pitch-black blocks */
@@ -95,6 +87,25 @@ custom_theme_css = """
     .institutional-footer strong {
         color: #003396 !important;
         font-family: 'Tiro Devanagari Sanskrit', serif !important;
+    }
+
+    /* Native Clean Expander Styling - strictly isolated from global engine bugs */
+    .custom-expander-panel {
+        background-color: #FFFFFF;
+        border: 1px solid #D5D8DC;
+        border-radius: 8px;
+        padding: 12px 18px;
+        margin-top: 10px;
+    }
+
+    .custom-expander-panel summary {
+        font-family: 'Tiro Devanagari Sanskrit', serif !important;
+        color: #003396 !important;
+        font-weight: bold !important;
+        font-size: 1.1rem;
+        cursor: pointer;
+        outline: none;
+        user-select: none;
     }
 </style>
 """
@@ -365,15 +376,22 @@ st.altair_chart(hourly_chart, use_container_width=True)
 
 # --- CLEAN DATA VIEW / EXPORT ENGINE ---
 st.markdown("---")
-# Isolated CSS fallback style inside the string label avoids raw layout icon strings overwriting the header text
-with st.expander("View and Download Filtered Local Station Records"):
-    st.dataframe(filtered_df.drop(columns=['Just_Date']))
-    st.download_button(
-        label="Download This Filtered Dataset (CSV)",
-        data=filtered_df.drop(columns=['Just_Date']).to_csv(index=False).encode('utf-8'),
-        file_name=f"IITI_Filtered_Data_{start_date}_to_{end_date}.csv",
-        mime="text/csv"
-    )
+# Custom standalone panel completely fixes text overlapping with the built-in expander element
+st.markdown("""
+<details class="custom-expander-panel">
+    <summary>View and Download Filtered Local Station Records</summary>
+    <div style="padding-top: 15px;"></div>
+""", unsafe_allow_html=True)
+
+st.dataframe(filtered_df.drop(columns=['Just_Date']))
+st.download_button(
+    label="Download This Filtered Dataset (CSV)",
+    data=filtered_df.drop(columns=['Just_Date']).to_csv(index=False).encode('utf-8'),
+    file_name=f"IITI_Filtered_Data_{start_date}_to_{end_date}.csv",
+    mime="text/csv"
+)
+
+st.markdown("</details>", unsafe_allow_html=True)
 
 # --- INSTITUTIONAL ATTRIBUTION FOOTNOTE ---
 st.markdown("---")
